@@ -1,0 +1,50 @@
+version: '2'
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8088:80"
+    working_dir: /application
+    depends_on:
+      - php-fpm
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ../:/application
+    container_name: jr-nginx
+
+  php-fpm:
+    build: ./php-fpm
+    volumes:
+      - ../:/application
+      - ./php-fpm/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
+    container_name: jr-php-fpm
+
+  worker-1:
+    restart: always
+    build: ./php-fpm
+    volumes:
+      - ../:/application
+      - ./php-fpm/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
+    container_name: jr-worker-1
+    command: php worker.php
+
+  worker-2:
+    restart: always
+    build: ./php-fpm
+    volumes:
+      - ../:/application
+      - ./php-fpm/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
+    container_name: jr-worker-2
+    command: php worker.php
+
+  rabbitmq:
+    build: rabbitmq
+    container_name: jr-rabbitmq
+    restart: "always"
+    working_dir: /
+    hostname: "rabbitmq"
+    ports:
+      - "15674:15674"
+      - "15672:15672"
+      - "5672:5672"
+
