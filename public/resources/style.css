@@ -1,0 +1,29 @@
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+}
+
+.main-content {
+
+}
+
+.content {
+    width: 500px;
+    height: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 30px;
+    margin-top: 30px;
+}
+
+.form-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.input {
+    margin: 10px 0px;
+}
