@@ -1,4 +1,8 @@
 <?php
+require_once "config" . DIRECTORY_SEPARATOR . "config.php";
+
+
+use App\CalculateController;
 
 if (isset($_POST['type'])) {
     try {
@@ -17,9 +21,15 @@ if (isset($_GET['page'])) {
             case 'main' :
                 (new CalculateController())->viewMainContent();
                 break;
+            case 'result' :
+                (new CalculateController())->updateResult($_GET['id']);
+                break;
         }
     } catch (Exception $e) {
     }
 }
-
+//match ($_GET['page']) {
+//    'main' =>  (new CalculateController())->viewMainContent(),
+//    'result' => (new CalculateController())->updateResult($_GET['id'])
+//};
 exit(0);

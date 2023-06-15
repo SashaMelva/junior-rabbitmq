@@ -2,10 +2,7 @@
 
 namespace App\Services;
 
-class ViewPath
+enum ViewPath: string
 {
-    public function mainPagePath(): string
-    {
-        return __DIR__ . "/../../public/index.php";
-    }
+    case mainPagePath = __DIR__ . "/../../public/index.php";
 }

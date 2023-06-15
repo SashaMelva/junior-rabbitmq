@@ -1,19 +1,16 @@
 <?php
 
+namespace App\Services;
+
 use App\Services\ViewPath;
 
 class View
 {
-    private $arguments;
-    private $viewPath;
-
     public function __construct(
-        string $viewPath,
-        array    $arguments = []
+         readonly ViewPath $viewPath,
+         array              $arguments = []
     )
     {
-        $this->viewPath = $viewPath;
-        $this->arguments = $arguments;
     }
 
     public function __toString(): string

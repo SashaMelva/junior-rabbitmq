@@ -27,3 +27,9 @@ body {
 .input {
     margin: 10px 0px;
 }
+
+.content-form-template{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
