@@ -37,6 +37,7 @@ async function fetchAndViewCalculateFib() {
 
     getResultForNumber(1);
     getResultForNumber(2);
+    getResultForNumber(3);
     btnSubmit.disabled = false;
 }
 
