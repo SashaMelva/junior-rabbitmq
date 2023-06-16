@@ -2,8 +2,7 @@
 
 namespace App;
 
-use App\Services\View;
-use App\Services\ViewPath;
+use App\Services\Response;
 use Exception;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -29,8 +28,6 @@ class CalculateController
         $this->sendForRabbitMQ($number1);
         $this->sendForRabbitMQ($number2);
         $this->sendForRabbitMQ($number3);
-
-        echo (new View(ViewPath::mainPagePath, ['result1' => $number1, 'result2' => $number2, 'result3' => $number3]));
     }
 
     /**
@@ -44,18 +41,13 @@ class CalculateController
         $channel->queue_declare('hello', false, false, false, false);
 
         $msg = new AMQPMessage($number);
-        $channel->basic_publish($msg, '', 'hi');
-
-        echo " [x] Sent 'Hello World!'\n";
-    }
-
-    public function viewMainContent(): View
-    {
-        return new View( ViewPath::mainPagePath, []);
+        $channel->basic_publish($msg, '', 'hello');
     }
 
     public function updateResult(int $id)
     {
-        echo 12 + $id;
+
+        $result = ;
+        (new Response('success', $result))->echo();
     }
 }

@@ -3,18 +3,21 @@ const btnSubmit = document.querySelector('#btn-submit');
 
 
 function insertIntoHtml(json) {
+    insertResultForInput(1, json)
+    insertResultForInput(2, json)
+    insertResultForInput(3, json)
     btnSubmit.disabled = false;
-    let main = document.querySelector('#app');
-
-    if (checkStatusJson(json.status)) {
-        main.innerHTML = json.html;
-    } else {
-        main.innerHTML = "Ошибка при вычислении"
-    }
 }
 
-function checkStatusJson(status) {
-    return status !== 'failed';
+function insertResultForInput(number, json) {
+
+    let inputResult = document.querySelector('#result-' + number);
+    let result = json.data
+    if (json.status === 'success') {
+        inputResult.value = result['result' + number];
+    } else {
+        alert("Ошибка при вычислении")
+    }
 }
 
 async function fetchAndViewCalculateFib() {
@@ -33,8 +36,9 @@ async function fetchAndViewCalculateFib() {
     //     getResultForNumber(3);
     // }, 2000);
 
-    // let json = await response.json();
-    // insertIntoHtml(json);
+    let json = await response.json();
+
+    insertIntoHtml(json);
 }
 
 async function fetchAndViewMainLoad() {

@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" href="public/resources/style.css">
 </head>
 <body>
-<main class="main-content">
+<main id="app" class="main-content">
     <div class="content">
         <h1>Рассчет нескольких чисел фиббоначи</h1>
         <div class="content-form-template">
@@ -26,15 +26,12 @@
             <div class="form-content">
                 <label for="result-1">Результат первого числа</label>
                 <input id="result-1" class="input"
-                       value="<?php if (isset($arguments['result1'])) : ?><?= $arguments['result1'] ?><?php endif ?>"
-                       type="number" readonly required>
+                      type="number" readonly required>
                 <label for="result-2">Результат второго числа</label>
                 <input id="result-2" class="input"
-                       value="<?php if (isset($arguments['result2'])) : ?><?= $arguments['result2'] ?><?php endif ?>"
                        type="number" readonly required>
                 <label for="result-3">Результат третьго числа</label>
                 <input id="result-3" class="input"
-                       value="<?php if (isset($arguments['result3'])) : ?><?= $arguments['result3'] ?><?php endif ?>"
                        type="number" readonly required>
             </div>
         </div>

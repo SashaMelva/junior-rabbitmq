@@ -3,7 +3,9 @@
     "description": "description",
     "minimum-stability": "dev",
     "require": {
-        "php-amqplib/php-amqplib": "v3.5.3"
+        "php-amqplib/php-amqplib": "v3.5.3",
+        "ext-json": "*",
+        "ext-iconv": "*"
     },
     "autoload": {
         "psr-4": {

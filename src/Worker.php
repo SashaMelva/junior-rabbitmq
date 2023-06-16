@@ -28,6 +28,7 @@ class Worker
             $result = $this->fib($msg->body);
             echo ' [x] Received ', $result, "\n";
             sleep(substr_count($msg->body, '.'));
+            $this->saveForMemcash();
             echo " [x] Done\n";
         };
 
