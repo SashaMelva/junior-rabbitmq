@@ -1,20 +1,19 @@
-
 const btnSubmit = document.querySelector('#btn-submit');
 
 
-function insertIntoHtml(json) {
-    insertResultForInput(1, json)
-    insertResultForInput(2, json)
-    insertResultForInput(3, json)
-    btnSubmit.disabled = false;
-}
+// function insertIntoHtml(json) {
+//     insertResultForInput(1, json)
+//     insertResultForInput(2, json)
+//     insertResultForInput(3, json)
+//     btnSubmit.disabled = false;
+// }
 
 function insertResultForInput(number, json) {
 
     let inputResult = document.querySelector('#result-' + number);
     let result = json.data
     if (json.status === 'success') {
-        inputResult.value = result['result' + number];
+        inputResult.value = result['result'];
     } else {
         alert("Ошибка при вычислении")
     }
@@ -24,7 +23,7 @@ async function fetchAndViewCalculateFib() {
     btnSubmit.disabled = true;
     const form = new FormData(document.querySelector(".form-content"));
 
-    let response = await fetch('/app.php', {
+    await fetch('/app.php', {
         method: 'POST',
         body: form
     });
@@ -32,37 +31,29 @@ async function fetchAndViewCalculateFib() {
     // setInterval(function () {
     //     console.log(1);
     //     getResultForNumber(1);
-    //     getResultForNumber(2);
-    //     getResultForNumber(3);
+    //     // getResultForNumber(2);
+    //     // getResultForNumber(3);
     // }, 2000);
 
-    let json = await response.json();
-
-    insertIntoHtml(json);
+    getResultForNumber(1);
+    getResultForNumber(2);
+    btnSubmit.disabled = false;
 }
 
-async function fetchAndViewMainLoad() {
-    let response = await fetch('/app.php?page=main');
-    let json = await response.json();
 
-    return json;
-}
-
-async function fetchAndResult(id) {
+async function fetchAndResult(number, id) {
     let response = await fetch('/app.php?page=result&id=' + id);
-    let json = await response.json();
-
-    return json;
+    let json = await response.json()
+    insertResultForInput(number, json)
 }
 
 
-function getResultForNumber(number){
+function getResultForNumber(number) {
     let inputNumber = document.querySelector("#number-" + number).value;
     let resultNumber = document.querySelector("#result-" + number);
 
-    if(resultNumber.value === "" && inputNumber !== "") {
-        $result = fetchAndResult(inputNumber);
-        resultNumber.value = $result;
+    if (resultNumber.value === "" && inputNumber !== "") {
+        fetchAndResult(number, inputNumber).then(r => "");
     }
 }
 

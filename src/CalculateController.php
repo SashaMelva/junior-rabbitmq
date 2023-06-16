@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Services\RedisForResult;
 use App\Services\Response;
 use Exception;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
@@ -25,9 +26,20 @@ class CalculateController
             echo null;
         }
 
-        $this->sendForRabbitMQ($number1);
-        $this->sendForRabbitMQ($number2);
-        $this->sendForRabbitMQ($number3);
+        $result = (new RedisForResult())->getResultForKey($number1);
+        if (is_null($result)) {
+            $this->sendForRabbitMQ($number1);
+        }
+
+        $result = (new RedisForResult())->getResultForKey($number2);
+        if (is_null($result)) {
+            $this->sendForRabbitMQ($number2);
+        }
+
+        $result = (new RedisForResult())->getResultForKey($number3);
+        if (is_null($result)) {
+            $this->sendForRabbitMQ($number3);
+        }
     }
 
     /**
@@ -44,10 +56,16 @@ class CalculateController
         $channel->basic_publish($msg, '', 'hello');
     }
 
-    public function updateResult(int $id)
+    /**
+     * @throws Exception
+     */
+    public function updateResult(int $key)
     {
+        $result = (new RedisForResult())->getResultForKey($key);
+        if (is_null($result)) {
+            (new Worker())->main();
+        }
 
-        $result = ;
-        (new Response('success', $result))->echo();
+        (new Response('success', ['result' => $result]))->echo();
     }
 }

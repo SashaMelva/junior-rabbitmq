@@ -5,7 +5,8 @@
     "require": {
         "php-amqplib/php-amqplib": "v3.5.3",
         "ext-json": "*",
-        "ext-iconv": "*"
+        "ext-iconv": "*",
+        "predis/predis": "^2.1"
     },
     "autoload": {
         "psr-4": {
