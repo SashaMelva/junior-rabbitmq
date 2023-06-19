@@ -1,13 +1,6 @@
 const btnSubmit = document.querySelector('#btn-submit');
 
 
-// function insertIntoHtml(json) {
-//     insertResultForInput(1, json)
-//     insertResultForInput(2, json)
-//     insertResultForInput(3, json)
-//     btnSubmit.disabled = false;
-// }
-
 function insertResultForInput(number, json) {
 
     let inputResult = document.querySelector('#result-' + number);
@@ -21,6 +14,7 @@ function insertResultForInput(number, json) {
 
 async function fetchAndViewCalculateFib() {
     btnSubmit.disabled = true;
+    clearInputResult(3)
     const form = new FormData(document.querySelector(".form-content"));
 
     await fetch('/app.php', {
@@ -28,17 +22,10 @@ async function fetchAndViewCalculateFib() {
         body: form
     });
 
-    // setInterval(function () {
-    //     console.log(1);
-    //     getResultForNumber(1);
-    //     // getResultForNumber(2);
-    //     // getResultForNumber(3);
-    // }, 2000);
-
-    getResultForNumber(1);
-    getResultForNumber(2);
-    getResultForNumber(3);
-    btnSubmit.disabled = false;
+    setInterval(function () {
+        getResultForNumber(3);
+        checkIsNullInputForResult(3)
+    }, 2000);
 }
 
 
@@ -49,40 +36,52 @@ async function fetchAndResult(number, id) {
 }
 
 
-function getResultForNumber(number) {
-    let inputNumber = document.querySelector("#number-" + number).value;
-    let resultNumber = document.querySelector("#result-" + number);
+function getResultForNumber(maxInput) {
+    for (let number = 1; number <= maxInput; number++) {
+        let inputNumber = document.querySelector("#number-" + number).value;
+        let resultNumber = document.querySelector("#result-" + number);
 
-    if (resultNumber.value === "" && inputNumber !== "") {
-        fetchAndResult(number, inputNumber).then(r => "");
+        if (resultNumber.value === "" && inputNumber !== "") {
+            fetchAndResult(number, inputNumber).then(r => "");
+            break;
+        }
     }
 }
 
-function validateInputNumber() {
-    let number1Input = document.querySelector("#number-1");
-    let number2Input = document.querySelector("#number-2");
-    let number3Input = document.querySelector("#number-3");
+function checkIsNullInputForResult(maxInput) {
+    let r = 0;
+    for (let number = 1; number <= maxInput; number++) {
+        let resultNumber = document.querySelector("#result-" + number);
+
+        if (resultNumber.value !== "") {
+            r++;
+        }
+    }
+
+    if (r > 0) {
+        btnSubmit.disabled = false;
+    }
+}
+
+function clearInputResult(maxInput) {
+    for (let number = 1; number <= maxInput; number++) {
+        let resultNumber = document.querySelector("#result-" + number);
+        resultNumber.value = "";
+    }
+}
+
+function validateInputNumber(maxInput) {
     $r = 0;
 
-    if (number1Input.value === "" || number1Input.value < 30 || number1Input.value > 60) {
-        number1Input.style.borderColor = "red";
-        $r++;
-    } else {
-        number1Input.style.borderColor = "green";
-    }
+    for (let number = 1; number <= maxInput; number++) {
+        let numberInput = document.querySelector("#number-" + number);
 
-    if (number2Input.value === "" || number2Input.value < 30 || number2Input.value > 60) {
-        number2Input.style.borderColor = "red";
-        $r++;
-    } else {
-        number2Input.style.borderColor = "green";
-    }
-
-    if (number3Input.value === "" || number3Input.value < 30 || number3Input.value > 60) {
-        number3Input.style.borderColor = "red";
-        $r++;
-    } else {
-        number3Input.style.borderColor = "green";
+        if (numberInput.value < 30 || numberInput.value > 60) {
+            numberInput.style.borderColor = "red";
+            $r++;
+        } else {
+            numberInput.style.borderColor = "green";
+        }
     }
 
     if ($r === 0) {

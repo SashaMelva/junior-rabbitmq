@@ -21,7 +21,7 @@
                 <input  value="33" id="number-2" name="number-2" class="input" type="number" min="30" max="60" required>
                 <label for="number-3">Введите третье число</label>
                 <input value="33"  id="number-3" name="number-3" class="input" type="number" min="30" max="60" required>
-                <button id="btn-submit" type='button' onclick="validateInputNumber()">Рассчитать</button>
+                <button id="btn-submit" type='button' onclick="validateInputNumber(3)">Рассчитать</button>
             </form>
             <div class="form-content">
                 <label for="result-1">Результат первого числа</label>
