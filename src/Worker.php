@@ -1,34 +1,22 @@
 <?php
 
-namespace App\Services;
+namespace App;
 
+use App\Services\RedisForResult;
 use Exception;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
 class Worker
 {
-    private $connection;
-
-    /**
-     * @throws Exception
-     */
-    public function __constructor()
-    {
-        $this->connection = new AMQPStreamConnection(
-            'jr-rabbitmq',
-            5672,
-            'guest',
-            'guest'
-        );
-    }
-
     /**
      * @throws Exception
      */
     public function worker(): void
     {
-        $channel = $this->connection->channel();
+        $connection = new AMQPStreamConnection('jr-rabbitmq', 5672, 'guest', 'guest');
+        $channel = $connection->channel();
+
         $channel->queue_declare('hello', false, false, false, false);
 
         $callback = function ($msg) {
@@ -44,7 +32,7 @@ class Worker
         }
 
         $channel->close();
-        $this->connection->close();
+        $connection->close();
     }
 
     /**
@@ -52,7 +40,9 @@ class Worker
      */
     public function send(int $number): void
     {
-        $channel = $this->connection->channel();
+        $connection = new AMQPStreamConnection('jr-rabbitmq', 5672, 'guest', 'guest');
+        $channel = $connection->channel();
+
         $channel->queue_declare('hello', false, false, false, false);
 
         $msg = new AMQPMessage($number);

@@ -4,7 +4,6 @@ namespace App;
 
 use App\Services\RedisForResult;
 use App\Services\Response;
-use App\Services\Worker;
 use Exception;
 
 class CalculateController
