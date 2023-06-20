@@ -6,31 +6,33 @@ use Predis\Client;
 
 class RedisForResult
 {
-    private $predis;
+    private Client $redisClient;
 
-    public function __construct()
+    public function __construct(Client $redisClient)
     {
-        $this->predis = new Client(
+        $this->redisClient = $redisClient;
+    }
+
+    public static function fromDefaultSettings(): self
+    {
+        $redisClient = new Client(
             [
                 'scheme' => 'tcp',
                 'host' => 'docker-redis-1',
                 'port' => '6379'
             ]
         );
+
+        return new self($redisClient);
     }
 
-    public function getResultForKey(string $key): ?string
+    public function getResultByKey(string $keyAsNumber): ?string
     {
-        return $this->predis->get($key);
+        return $this->redisClient->get($keyAsNumber);
     }
 
-    public function putNewResultForKey(string $number, string $value): void
+    public function addResultByKey(string $keyAsNumber, string $result): void
     {
-        $this->predis->set($number, $value);
-    }
-
-    public function deleteKeyUser(int $userId): void
-    {
-        $this->predis->del('user:' . $userId);
+        $this->redisClient->set($keyAsNumber, $result);
     }
 }

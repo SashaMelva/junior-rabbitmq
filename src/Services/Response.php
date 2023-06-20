@@ -12,11 +12,11 @@ class Response
         ?array $data
     )
     {
-        $this->data = $data;
         $this->status = $status;
+        $this->data = $data;
     }
 
-    public function echo(): void
+    public function echoAsJson(): void
     {
         echo json_encode(['status' => $this->status, 'data' => $this->data]);
     }

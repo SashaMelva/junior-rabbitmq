@@ -9,20 +9,43 @@ use PhpAmqpLib\Message\AMQPMessage;
 
 class Worker
 {
+    private AMQPStreamConnection $connection;
+
     /**
      * @throws Exception
      */
-    public function worker(): void
+    public function __construct(AMQPStreamConnection $connection)
     {
-        $connection = new AMQPStreamConnection('jr-rabbitmq', 5672, 'guest', 'guest');
-        $channel = $connection->channel();
+        $this->connection = $connection;
+    }
 
+    /**
+     * @throws Exception
+     */
+    public static function withDefaultSettings(): self
+    {
+        $connection = new AMQPStreamConnection(
+            'jr-rabbitmq',
+            5672,
+            'guest',
+            'guest'
+        );
+
+        return new self($connection);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function run(): void
+    {
+        $channel = $this->connection->channel();
         $channel->queue_declare('hello', false, false, false, false);
 
         $callback = function ($msg) {
             $number = $msg->body;
             $result = $this->fib($number);
-            (new RedisForResult())->putNewResultForKey((string)$number, (string)$result);
+            RedisForResult::fromDefaultSettings()->addResultByKey((string)$number, (string)$result);
         };
 
         $channel->basic_consume('hello', '', false, true, false, false, $callback);
@@ -32,7 +55,7 @@ class Worker
         }
 
         $channel->close();
-        $connection->close();
+        $this->connection->close();
     }
 
     /**
@@ -40,9 +63,7 @@ class Worker
      */
     public function send(int $number): void
     {
-        $connection = new AMQPStreamConnection('jr-rabbitmq', 5672, 'guest', 'guest');
-        $channel = $connection->channel();
-
+        $channel = $this->connection->channel();
         $channel->queue_declare('hello', false, false, false, false);
 
         $msg = new AMQPMessage($number);

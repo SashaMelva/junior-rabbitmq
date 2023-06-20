@@ -11,31 +11,29 @@ class CalculateController
     /**
      * @throws Exception
      */
-    public function validationCalculation(int $number1, int $number2, int $number3): void
+    public function validateInputData(int $number1, int $number2, int $number3): void
     {
-        if ($number1 < 30 || $number1 > 60) {
-            echo null;
+        $numbers = [$number1, $number2, $number3];
+
+        foreach ($numbers as $value){
+            $this->processForRabbitMq($value);
         }
-        if ($number2 < 30 || $number2 > 60) {
-            echo null;
-        }
-        if ($number3 < 30 || $number3 > 60) {
-            echo null;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function processForRabbitMq(int $number): void
+    {
+
+        if ($number < 30 || $number > 60) {
+            return;
         }
 
-        $result = (new RedisForResult())->getResultForKey($number1);
-        if (is_null($result)) {
-            $this->sendForRabbitMQ($number1);
-        }
+        $resultForNumber = RedisForResult::fromDefaultSettings()->getResultByKey($number);
 
-        $result = (new RedisForResult())->getResultForKey($number2);
-        if (is_null($result)) {
-            $this->sendForRabbitMQ($number2);
-        }
-
-        $result = (new RedisForResult())->getResultForKey($number3);
-        if (is_null($result)) {
-            $this->sendForRabbitMQ($number3);
+        if (is_null($resultForNumber)) {
+            $this->sendForRabbitMQ($number);
         }
     }
 
@@ -44,19 +42,20 @@ class CalculateController
      */
     private function sendForRabbitMQ(int $number): void
     {
-        (new Worker())->send($number);
+        Worker::withDefaultSettings()->send($number);
     }
 
     /**
      * @throws Exception
      */
-    public function updateResult(int $key): void
+    public function getResultOrRunWorkerIfThereIsNone(int $key): void
     {
-        $result = (new RedisForResult())->getResultForKey($key);
+        $result = (RedisForResult::fromDefaultSettings())->getResultByKey($key);
+
         if (is_null($result)) {
-            (new Worker())->worker();
+            Worker::withDefaultSettings()->run();
         }
 
-        (new Response('success', ['result' => $result]))->echo();
+        (new Response('success', ['result' => $result]))->echoAsJson();
     }
 }
