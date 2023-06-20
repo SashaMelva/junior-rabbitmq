@@ -18,9 +18,6 @@ if (isset($_POST['type'])) {
 if (isset($_GET['page'])) {
     try {
         switch ($_GET['page']) {
-            case 'main' :
-                (new CalculateController())->viewMainContent();
-                break;
             case 'result' :
                 (new CalculateController())->updateResult($_GET['id']);
                 break;
@@ -28,8 +25,4 @@ if (isset($_GET['page'])) {
     } catch (Exception $e) {
     }
 }
-//match ($_GET['page']) {
-//    'main' =>  (new CalculateController())->viewMainContent(),
-//    'result' => (new CalculateController())->updateResult($_GET['id'])
-//};
 exit(0);
